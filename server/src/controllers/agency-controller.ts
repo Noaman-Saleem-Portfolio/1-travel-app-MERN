@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { NewAgencyRequestBody } from "../types/types.js";
 import { Agency } from "../models/agency-model.js";
-import { rm } from "fs";
+import { PathLike, rm } from "fs";
 import ErrorHandler from "../utils/utility-class.js";
 import { TryCatch } from "../middlewares/error.js";
 
@@ -35,9 +35,22 @@ export const newAgency = TryCatch(
 
     //How to use Multer with Type script url link
     // https://copyprogramming.com/howto/using-multer-diskstorage-with-typescript
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-    // console.log(files.companyLogo[0]);
-    const logo = files.companyLogo[0];
+    const files = req.files as {
+      [fieldname: string]: Express.Multer.File[];
+    };
+
+    let logo;
+    // console.log("here");
+    // console.log(files.companyLogo);
+    //to check whether to delete file from upload folder
+    // console.log(files.companyLogo !== undefined);
+    // const logo = files.companyLogo[0];
+
+    if (files.companyLogo) {
+      logo = files.companyLogo[0];
+    }
+
+    // console.log(logo);
 
     if (
       !name ||
@@ -48,9 +61,13 @@ export const newAgency = TryCatch(
       !city ||
       !country
     ) {
-      rm(logo.path, () => {
-        console.log("Deleted");
-      });
+      if (files.companyLogo) {
+        // console.log("File is uploaded");
+
+        rm(logo?.path as PathLike, () => {
+          console.log("Deleted");
+        });
+      }
 
       return next(new ErrorHandler("Please enter All Fields", 400));
     }
@@ -65,7 +82,7 @@ export const newAgency = TryCatch(
       country,
       websiteUrl,
       facebookProfile,
-      companyLogo: logo.path,
+      companyLogo: logo?.path,
     });
 
     return res.status(200).json({
