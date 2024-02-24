@@ -1,16 +1,50 @@
 import { NextFunction, Request, Response } from "express";
 import { NewAgencyRequestBody } from "../types/types.js";
-import { Agency } from "../models/agency-model.js";
+import { Agency, agencyType } from "../models/agency-model.js";
 import { PathLike, rm } from "fs";
 import ErrorHandler from "../utils/utility-class.js";
 import { TryCatch } from "../middlewares/error.js";
+import { Document, Types } from "mongoose";
 
+const generateAccessAndRefereshTokens = async (userId: Types.ObjectId) => {
+  try {
+    const user: Document &
+      agencyType & {
+        _id: Types.ObjectId;
+      } = await Agency.findById(userId);
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new Error(
+      "Something went wrong while generating referesh and access token"
+    );
+  }
+};
+
+//////////////////////////////
+//// Create New Agency Account
+//////////////////////////////
 export const newAgency = TryCatch(
   async (
     req: Request<{}, {}, NewAgencyRequestBody>,
     res: Response,
     next: NextFunction
   ) => {
+    // get user details from frontend
+    // validation - not empty
+    // check if user already exists: username, email
+    // check for images, check for avatar
+    // upload them to cloudinary, avatar
+    // create user object - create entry in db
+    // remove password and refresh token field from response
+    // check for user creation
+    // return res
+
     const {
       name,
       email,
@@ -72,7 +106,7 @@ export const newAgency = TryCatch(
       return next(new ErrorHandler("Please enter All Fields", 400));
     }
 
-    await Agency.create({
+    const agency = await Agency.create({
       name,
       email,
       password,
@@ -85,9 +119,116 @@ export const newAgency = TryCatch(
       companyLogo: logo?.path,
     });
 
+    const createdAgency = await Agency.findById(agency._id).select(
+      "-password -refreshToken"
+    );
+
+    if (!createdAgency) {
+      return next(
+        new ErrorHandler("Something went wrong while registering the user", 500)
+      );
+    }
+
     return res.status(200).json({
       success: true,
       message: "New Agency Successfully Created!!",
     });
+  }
+);
+
+//////////////////////////////
+//// Login
+//////////////////////////////
+export const loginAgency = TryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // req body -> data
+    // username or email
+    //find the user
+    //password check
+    //access and referesh token
+    //send cookie
+
+    const { email, password } = req.body;
+
+    // console.log("Email :", email);
+    // console.log("Password :", password);
+
+    if (!email || !password) {
+      return next(
+        new ErrorHandler(
+          "Both Email and password must be entered to login",
+          400
+        )
+      );
+    }
+
+    const agency = await Agency.findOne({ email });
+    if (!agency) {
+      return next(
+        new ErrorHandler("No account exists with the provided email", 404)
+      );
+    }
+
+    const isPasswordValid = await agency.isPasswordCorrect(password);
+
+    if (!isPasswordValid) {
+      return next(new ErrorHandler("Invalid email or password", 401));
+    }
+
+    const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
+      agency._id
+    );
+
+    const loggedInUser = await Agency.findById(agency._id).select(
+      "-password -refreshToken"
+    );
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
+      .json({
+        success: true,
+        message: "User logged In Successfully",
+        user: loggedInUser,
+      });
+  }
+);
+
+//////////////////////////////
+//// Logout
+//////////////////////////////
+export const logoutAgency = TryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {
+    await Agency.findByIdAndUpdate(
+      req.user._id,
+      {
+        $unset: {
+          refreshToken: 1, // this removes the field from document
+        },
+      },
+      {
+        new: true,
+      }
+    );
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+
+    return res
+      .status(200)
+      .clearCookie("accessToken", options)
+      .clearCookie("refreshToken", options)
+      .json({
+        success: true,
+        message: "User logged out Successfully",
+      });
   }
 );

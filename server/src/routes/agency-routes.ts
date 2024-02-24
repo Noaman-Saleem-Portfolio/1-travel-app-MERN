@@ -1,6 +1,11 @@
 import express from "express";
-import { newAgency } from "../controllers/agency-controller.js";
+import {
+  loginAgency,
+  logoutAgency,
+  newAgency,
+} from "../controllers/agency-controller.js";
 import { upload } from "../middlewares/multer.js";
+import { verifyJWT } from "../middlewares/auth-agency-middleware.js";
 
 const router = express.Router();
 
@@ -15,5 +20,12 @@ router.route("/new").post(
   ]),
   newAgency
 );
+
+// route - /api/v1/agency/login
+router.route("/login").post(loginAgency);
+
+//secure routes
+// route - /api/v1/agency/logout
+router.route("/logout").post(verifyJWT, logoutAgency);
 
 export default router;

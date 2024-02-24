@@ -1,7 +1,15 @@
 import mongoose from "mongoose";
 import validator from "validator";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+// import { config } from "dotenv";
 
-interface agencyType extends Document {
+//Configuring environment variables
+// config({
+//   path: "./.env",
+// });
+
+export interface agencyType extends Document {
   name: string;
   email: string;
   password: string;
@@ -13,16 +21,22 @@ interface agencyType extends Document {
   websiteUrl: string | null;
   facebookProfile: string | null;
   isApproved: boolean;
+  refreshToken: string | null;
   resetPasswordToken: string;
   resetPasswordExpire: string;
   createdAt: Date;
   updatedAt: Date;
+  isPasswordCorrect: (password: string) => Promise<boolean>;
+  generateAccessToken: () => string;
+  generateRefreshToken: () => string;
 }
 
 const agencySchema = new mongoose.Schema(
   {
     name: {
       type: String,
+      lowercase: true,
+      trim: true,
       required: [true, "Please enter Name"],
     },
 
@@ -36,8 +50,8 @@ const agencySchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, "Please enter Email"],
-      minLength: [6, "Password should be greater than 6 characters"],
-      select: false,
+      minLength: [8, "Password should be greater than 8 characters"],
+      // select: false,
     },
 
     companyLogo: {
@@ -79,6 +93,11 @@ const agencySchema = new mongoose.Schema(
       default: false,
     },
 
+    refreshToken: {
+      type: String,
+      default: null,
+    },
+
     resetPasswordToken: String,
     resetPasswordExpire: Date,
   },
@@ -86,5 +105,47 @@ const agencySchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+//Middleware
+//Encrypt password before saving data in DB
+agencySchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+// Compare Password
+agencySchema.methods.isPasswordCorrect = async function (password: string) {
+  return await bcrypt.compare(password, this.password);
+};
+
+//Generate Access Token
+agencySchema.methods.generateAccessToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      email: this.email,
+      name: this.name,
+    },
+    process.env.ACCESS_TOKEN_SECRET as jwt.Secret,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+    }
+  );
+};
+
+//Generate Refresh Token
+agencySchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+    },
+    process.env.REFRESH_TOKEN_SECRET as jwt.Secret,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+    }
+  );
+};
 
 export const Agency = mongoose.model<agencyType>("Agency", agencySchema);
