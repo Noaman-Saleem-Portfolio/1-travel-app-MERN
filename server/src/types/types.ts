@@ -19,3 +19,8 @@ export type ControllerType = (
   res: Response,
   next: NextFunction
 ) => Promise<void | Response<any, Record<string, any>>>;
+
+export interface MyUserRequest extends Request {
+  // Use `user?:` here instead of `user:`.
+  user?: any;
+}

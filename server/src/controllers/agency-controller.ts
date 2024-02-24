@@ -1,17 +1,14 @@
 import { NextFunction, Request, Response } from "express";
-import { NewAgencyRequestBody } from "../types/types.js";
+import { MyUserRequest, NewAgencyRequestBody } from "../types/types.js";
 import { Agency, agencyType } from "../models/agency-model.js";
 import { PathLike, rm } from "fs";
 import ErrorHandler from "../utils/utility-class.js";
 import { TryCatch } from "../middlewares/error.js";
-import { Document, Types } from "mongoose";
+import { Types } from "mongoose";
 
 const generateAccessAndRefereshTokens = async (userId: Types.ObjectId) => {
   try {
-    const user: Document &
-      agencyType & {
-        _id: Types.ObjectId;
-      } = await Agency.findById(userId);
+    const user: any = await Agency.findById(userId);
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
 
@@ -204,7 +201,7 @@ export const loginAgency = TryCatch(
 //// Logout
 //////////////////////////////
 export const logoutAgency = TryCatch(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: MyUserRequest, res: Response, next: NextFunction) => {
     await Agency.findByIdAndUpdate(
       req.user._id,
       {
