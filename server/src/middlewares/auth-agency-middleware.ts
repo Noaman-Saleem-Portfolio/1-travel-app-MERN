@@ -26,8 +26,8 @@ export const verifyJWT = TryCatch(
         process.env.ACCESS_TOKEN_SECRET as Secret | GetPublicKeyOrSecret
       ) as any;
 
-      console.log("decodedToken");
-      console.log(decodedToken);
+      // console.log("decodedToken");
+      // console.log(decodedToken);
 
       const user = await Agency.findById(decodedToken?._id).select(
         "-password -refreshToken"

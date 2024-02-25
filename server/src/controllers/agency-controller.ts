@@ -5,6 +5,7 @@ import { PathLike, rm } from "fs";
 import ErrorHandler from "../utils/utility-class.js";
 import { TryCatch } from "../middlewares/error.js";
 import { Types } from "mongoose";
+import jwt from "jsonwebtoken";
 
 const generateAccessAndRefereshTokens = async (userId: Types.ObjectId) => {
   try {
@@ -227,5 +228,57 @@ export const logoutAgency = TryCatch(
         success: true,
         message: "User logged out Successfully",
       });
+  }
+);
+
+//////////////////////////////
+//// Refresh Access Token
+//////////////////////////////
+export const refreshAccessToken = TryCatch(
+  async (req: MyUserRequest, res: Response, next: NextFunction) => {
+    const incomingRefreshToken =
+      req.cookies.refreshToken || req.body.refreshToken;
+
+    if (!incomingRefreshToken) {
+      return next(new ErrorHandler("unauthorized request", 401));
+    }
+
+    try {
+      const decodedToken = jwt.verify(
+        incomingRefreshToken,
+        process.env.REFRESH_TOKEN_SECRET as jwt.Secret
+      ) as any;
+
+      const user = await Agency.findById(decodedToken?._id);
+
+      if (!user) {
+        return next(new ErrorHandler("Invalid refresh token", 401));
+      }
+
+      if (incomingRefreshToken !== user?.refreshToken) {
+        return next(new ErrorHandler("Refresh token is expired or used", 401));
+      }
+
+      const options = {
+        httpOnly: true,
+        secure: true,
+      };
+
+      const { accessToken, refreshToken } =
+        await generateAccessAndRefereshTokens(user._id);
+
+      res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json({
+          success: true,
+          message: "Access token refreshed",
+        });
+    } catch (error: any) {
+      return next(
+        new ErrorHandler(error?.message || "Invalid refresh token", 401)
+      );
+    }
   }
 );

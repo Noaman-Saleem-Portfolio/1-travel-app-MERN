@@ -3,6 +3,7 @@ import {
   loginAgency,
   logoutAgency,
   newAgency,
+  refreshAccessToken,
 } from "../controllers/agency-controller.js";
 import { upload } from "../middlewares/multer.js";
 import { verifyJWT } from "../middlewares/auth-agency-middleware.js";
@@ -28,4 +29,8 @@ router.route("/login").post(loginAgency);
 // route - /api/v1/agency/logout
 router.route("/logout").post(verifyJWT, logoutAgency);
 
-export default router;
+// route - /api/v1/agency/refresh-token
+router.route("/refresh-token").post(refreshAccessToken)
+
+
+export default router; 
