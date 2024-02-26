@@ -6,6 +6,7 @@ import ErrorHandler from "../utils/utility-class.js";
 import { TryCatch } from "../middlewares/error.js";
 import { Types } from "mongoose";
 import jwt from "jsonwebtoken";
+import { sendEmail } from "../utils/send-email.js";
 
 const generateAccessAndRefereshTokens = async (userId: Types.ObjectId) => {
   try {
@@ -126,6 +127,23 @@ export const newAgency = TryCatch(
         new ErrorHandler("Something went wrong while registering the user", 500)
       );
     }
+
+    const message = `Your account details are :- \n\nEmail: ${email} \n\nPassword ${password}`;
+
+  try {
+    await sendEmail({
+      email: createdAgency.email,
+      subject: `Travel App Your account details`,
+      message,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Email sent to ${createdAgency.email} successfully`,
+    });
+  } catch (error:any) {
+    return next(new ErrorHandler(error.message, 500));
+  }
 
     return res.status(200).json({
       success: true,
