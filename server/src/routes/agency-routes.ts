@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  changeCurrentPassword,
   loginAgency,
   logoutAgency,
   newAgency,
@@ -31,6 +32,8 @@ router.route("/logout").post(verifyJWT, logoutAgency);
 
 // route - /api/v1/agency/refresh-token
 router.route("/refresh-token").post(refreshAccessToken)
+// route - /api/v1/agency/change-password
+router.route("/change-password").post(verifyJWT, changeCurrentPassword)
 
 
 export default router; 

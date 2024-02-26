@@ -128,22 +128,24 @@ export const newAgency = TryCatch(
       );
     }
 
+    //Send Email to newly created user
+
     const message = `Your account details are :- \n\nEmail: ${email} \n\nPassword ${password}`;
 
-  try {
-    await sendEmail({
-      email: createdAgency.email,
-      subject: `Travel App Your account details`,
-      message,
-    });
+    try {
+      await sendEmail({
+        email: createdAgency.email,
+        subject: `Travel App Your account details`,
+        message,
+      });
 
-    res.status(200).json({
-      success: true,
-      message: `Email sent to ${createdAgency.email} successfully`,
-    });
-  } catch (error:any) {
-    return next(new ErrorHandler(error.message, 500));
-  }
+      res.status(200).json({
+        success: true,
+        message: `Email sent to ${createdAgency.email} successfully`,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
+    }
 
     return res.status(200).json({
       success: true,
@@ -298,5 +300,49 @@ export const refreshAccessToken = TryCatch(
         new ErrorHandler(error?.message || "Invalid refresh token", 401)
       );
     }
+  }
+);
+
+//////////////////////////////
+//// Change Current Password
+//////////////////////////////
+export const changeCurrentPassword = TryCatch(
+  async (req: MyUserRequest, res: Response, next: NextFunction) => {
+    const { oldPassword, newPassword } = req.body;
+
+    const user = await Agency.findById(req.user?._id);
+
+    const isPasswordCorrect = await user?.isPasswordCorrect(oldPassword);
+
+    if (!isPasswordCorrect) {
+      return next(new ErrorHandler("Invalid old password", 400));
+    }
+
+    // 'user' is possibly 'null'
+    //Error = The left-hand side of an assignment expression may not be an optional property access.
+    //To solve the error, use an if statement as a type guard before the assignment.
+    //   We used the loose not equals operator (!=), to check if the variable is NOT equal to null and undefined.
+
+    // This works because when compared loosely, null is equal to undefined.
+
+    // index.ts
+
+    // console.log(null == undefined); // 👉️ true
+
+    // console.log(null === undefined); // 👉️ false
+
+    //Error = The left-hand side of an assignment expression may not be an optional property access.
+    //Using the logical AND (&&) operator to get around the error
+    // ref: https://bobbyhadz.com/blog/typescript-left-hand-side-of-assignment-not-optional
+
+    if (user != undefined) {
+      user.password = newPassword;
+      await user.save({ validateBeforeSave: false });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Password changed successfully",
+    });
   }
 );
