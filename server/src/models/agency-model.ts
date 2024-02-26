@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import crypto from "crypto"
 // import { config } from "dotenv";
 
 //Configuring environment variables
@@ -22,13 +23,14 @@ export interface agencyType extends Document {
   facebookProfile: string | null;
   isApproved: boolean;
   refreshToken: string | null;
-  resetPasswordToken: string;
-  resetPasswordExpire: string;
+  resetPasswordToken: string | null ;
+  resetPasswordExpire: string | null ;
   createdAt: Date;
   updatedAt: Date;
   isPasswordCorrect: (password: string) => Promise<boolean>;
   generateAccessToken: () => string;
   generateRefreshToken: () => string;
+  getResetPasswordToken: () => string;
 }
 
 const agencySchema = new mongoose.Schema(
@@ -146,6 +148,22 @@ agencySchema.methods.generateRefreshToken = function () {
       expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
     }
   );
+};
+
+// Generating Password Reset Token
+agencySchema.methods.getResetPasswordToken = function () {
+  // Generating Token
+  const resetToken = crypto.randomBytes(20).toString("hex");
+
+  // Hashing and adding resetPasswordToken to userSchema
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  this.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
+
+  return resetToken;
 };
 
 export const Agency = mongoose.model<agencyType>("Agency", agencySchema);

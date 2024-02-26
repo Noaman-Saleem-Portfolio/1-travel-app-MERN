@@ -1,10 +1,12 @@
 import express from "express";
 import {
   changeCurrentPassword,
+  forgotPassword,
   loginAgency,
   logoutAgency,
   newAgency,
   refreshAccessToken,
+  resetPassword,
 } from "../controllers/agency-controller.js";
 import { upload } from "../middlewares/multer.js";
 import { verifyJWT } from "../middlewares/auth-agency-middleware.js";
@@ -25,6 +27,12 @@ router.route("/new").post(
 
 // route - /api/v1/agency/login
 router.route("/login").post(loginAgency);
+
+// route - /api/v1/password/forgot
+router.route("/password/forgot").post(forgotPassword);
+
+// route - /api/v1/password/reset/:token
+router.route("/password/reset/:token").put(resetPassword);
 
 //secure routes
 // route - /api/v1/agency/logout
