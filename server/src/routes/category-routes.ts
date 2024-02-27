@@ -11,3 +11,4 @@ router.route("/all").get(getAllCategories)
 router.route("/new").post(newCategory)
 
 export default router
+

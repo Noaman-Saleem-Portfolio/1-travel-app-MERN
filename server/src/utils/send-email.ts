@@ -1,16 +1,27 @@
 import nodemailer from "nodemailer";
+import { config } from "dotenv";
+
+//Configuring environment variables
+config({
+  path: "./.env",
+});
+
+// console.log(`in send email`);
+
+// console.log(process.env.EMAIL_SERVICE);
+
 
 const transporter = nodemailer.createTransport({
-  service: "Gmail",
-  host: "smtp.gmail.com",
+  service: process.env.EMAIL_SERVICE,
+  host: process.env.EMAIL_HOST,
   port: 465,
   secure: true,
   auth: {
     // TODO: replace `user` and `pass` values from <https://forwardemail.net>
-    user: "noaman2266@gmail.com",
-    pass: "uykq pfaf vdvf xiyb",
+    user: process.env.EMAIL_SENDER_ADDRESS,
+    pass: process.env.EMAIL_SERVICE_APP_PASSWORD,
   },
-});
+}); 
 
 export const sendEmail = async (options: {
   email: string;
