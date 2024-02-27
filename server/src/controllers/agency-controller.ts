@@ -121,6 +121,7 @@ export const newAgency = TryCatch(
       companyLogo: logo?.path,
     });
 
+    //confirmation
     const createdAgency = await Agency.findById(agency._id).select(
       "-password -refreshToken"
     );
@@ -142,17 +143,17 @@ export const newAgency = TryCatch(
         message,
       });
 
-      res.status(200).json({
-        success: true,
-        message: `Email sent to ${createdAgency.email} successfully`,
-      });
+      // res.status(200).json({
+      //   success: true,
+      //   message: `Email sent to ${createdAgency.email} successfully`,
+      // });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }
 
     return res.status(200).json({
       success: true,
-      message: "New Agency Successfully Created!!",
+      message: `New Agency account Successfully Created and Email sent to ${createdAgency.email} successfully`,
     });
   }
 );

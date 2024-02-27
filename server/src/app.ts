@@ -8,6 +8,8 @@ import connectDB from "./database/database.js";
 
 // Importing Routes
 import agencyRoutes from "./routes/agency-routes.js";
+import categoryRoutes from "./routes/category-routes.js";
+
 import { errorMiddleware } from "./middlewares/error.js";
 
 //Configuring environment variables
@@ -42,6 +44,7 @@ app.get("/", (req, res) => {
 
 //Routes declaration
 app.use("/api/v1/agency", agencyRoutes);
+app.use("/api/v1/category", categoryRoutes);
 
 app.use("/uploads", express.static("uploads"));
 app.use(errorMiddleware);
