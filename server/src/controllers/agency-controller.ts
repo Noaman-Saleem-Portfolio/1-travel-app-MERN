@@ -469,5 +469,45 @@ export const resetPassword = TryCatch(
 // Update Agency Logo
 //////////////////////////////
 export const updateAgencyLogo = TryCatch(
-  async (req: Request, res: Response, next: NextFunction) => {}
+  async (req: MyUserRequest, res: Response, next: NextFunction) => {
+    // console.log("update-logo API");
+    // console.log("req.file :");
+    // console.log(req.file);
+
+    //reading the incoming image
+    const avatarLocalPath = req.file?.path;
+
+    if (!avatarLocalPath) {
+      return next(new ErrorHandler("Avatar file is missing", 400));
+    }
+
+    //TODO: delete old image - assignment
+    const user = await Agency.findById(req.user._id);
+
+    if (!user) {
+      return next(new ErrorHandler("No user found in DB", 400));
+    }
+
+    if (user.companyLogo) {
+      rm(user.companyLogo, () => {
+        console.log("Deleted");
+      });
+    }
+
+    const updatedUser = await Agency.findByIdAndUpdate(
+      req.user?._id,
+      {
+        $set: {
+          companyLogo: avatarLocalPath,
+        },
+      },
+      { new: true }
+    ).select("-password");
+
+    res.status(200).json({
+      success: true,
+      message: "Avatar image updated successfully",
+      updatedUser,
+    });
+  }
 );

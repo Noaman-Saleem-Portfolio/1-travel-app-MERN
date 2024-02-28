@@ -7,6 +7,7 @@ import {
   newAgency,
   refreshAccessToken,
   resetPassword,
+  updateAgencyLogo,
 } from "../controllers/agency-controller.js";
 import { upload } from "../middlewares/multer.js";
 import { verifyJWT } from "../middlewares/auth-agency-middleware.js";
@@ -39,9 +40,13 @@ router.route("/password/reset/:token").put(resetPassword);
 router.route("/logout").post(verifyJWT, logoutAgency);
 
 // route - /api/v1/agency/refresh-token
-router.route("/refresh-token").post(refreshAccessToken)
+router.route("/refresh-token").post(refreshAccessToken);
 // route - /api/v1/agency/change-password
-router.route("/change-password").post(verifyJWT, changeCurrentPassword)
+router.route("/change-password").post(verifyJWT, changeCurrentPassword);
 
+// route - /api/v1/agency/update-logo
+router
+  .route("/update-logo")
+  .post(verifyJWT, upload.single("companyLogo"), updateAgencyLogo);
 
-export default router; 
+export default router;
