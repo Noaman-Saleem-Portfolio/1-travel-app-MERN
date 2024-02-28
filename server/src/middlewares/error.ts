@@ -11,6 +11,7 @@ export const errorMiddleware = (
   err.message ||= "Internal Server Error";
   err.statusCode ||= 500;
 
+  //when length of _id is less or more
   if (err.name === "CastError") err.message = "Invalid ID";
 
   //   console.log("In error middleware!");

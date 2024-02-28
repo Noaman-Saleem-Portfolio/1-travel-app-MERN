@@ -2,12 +2,14 @@ import { NextFunction, Request, Response } from "express";
 import { TryCatch } from "../middlewares/error.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { Package } from "../models/package-model.js";
+import { MyUserRequest } from "../types/types.js";
+import { Category } from "../models/category-model.js";
 
 //////////////////////////////
 //// Create New Holiday Package
 //////////////////////////////
 export const newPackage = TryCatch(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: MyUserRequest, res: Response, next: NextFunction) => {
     //get package details from frontend
     const {
       packageName,
@@ -33,7 +35,7 @@ export const newPackage = TryCatch(
 
     if (
       !packageName ||
-      !packageOwner ||
+      // !packageOwner ||
       !packageCategory ||
       !duration ||
       !departure ||
@@ -47,10 +49,17 @@ export const newPackage = TryCatch(
       return next(new ErrorHandler("Please enter All Fields", 400));
     }
 
+    const category = await Category.findById(packageCategory);
+    if (!category) {
+      return next(
+        new ErrorHandler("Package Category ID does not exists in DB", 400)
+      );
+    }
+
     const newlyPackage = await Package.create({
       packageName,
-      packageOwner,
-      packageCategory,
+      packageOwner: req.user._id,
+      packageCategory: category?._id,
       duration,
       departure,
       destination,
