@@ -37,6 +37,10 @@ export const verifyJWT = TryCatch(
         return next(new ErrorHandler("Invalid Access Token", 401));
       }
 
+      if (user.role !== "agency") {
+        return next(new ErrorHandler("Only Agency Owner are authorized to create new package", 401));
+      }
+
       //This type error resolving info webpage
       //https://stackoverflow.com/questions/44383387/typescript-error-property-user-does-not-exist-on-type-request
       req.user = user;

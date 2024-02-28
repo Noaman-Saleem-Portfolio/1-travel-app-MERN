@@ -76,8 +76,8 @@ export const newAgency = TryCatch(
     };
 
     let logo;
-    // console.log("here");
-    // console.log(files.companyLogo);
+    console.log("here");
+    console.log(files.companyLogo);
     //to check whether to delete file from upload folder
     // console.log(files.companyLogo !== undefined);
     // const logo = files.companyLogo[0];
@@ -458,3 +458,17 @@ export const resetPassword = TryCatch(async (req:Request, res:Response, next:Nex
     });
 
 });
+
+//////////////////////////////
+// Update Agency Logo
+//////////////////////////////
+export const updateAgencyLogo = TryCatch(async (req:Request, res:Response, next:NextFunction) => {
+
+})
+
+
+
+
+
+
+

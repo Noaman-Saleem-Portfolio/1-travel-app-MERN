@@ -14,6 +14,7 @@ export interface agencyType extends Document {
   name: string;
   email: string;
   password: string;
+  role:string;
   companyLogo: string | null;
   phoneNumber: number;
   address: string;
@@ -55,7 +56,10 @@ const agencySchema = new mongoose.Schema(
       minLength: [8, "Password should be greater than 8 characters"],
       // select: false,
     },
-
+    role:{
+      type:String,
+      default:"agency"
+    },
     companyLogo: {
       type: String,
       default: null,

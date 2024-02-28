@@ -5,9 +5,15 @@ const travelPackageSchema = new mongoose.Schema({
         type:String,
         required:[true,"Please enter Package Name"]
     },
+    packageOwner:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Agency",
+        required:true
+    },
     packageCategory:{
         type: mongoose.Schema.Types.ObjectId,
-        ref:"Category"
+        ref:"Category",
+        required:true
     },
     packageImages:{
         type:[String],
@@ -27,13 +33,14 @@ const travelPackageSchema = new mongoose.Schema({
     },
     transportation:{
         type:String,
-        enum:["Plane","Bus","Car","Train","Boat"]
+        enum:["Plane","Bus","Car","Train","Boat"],
+        default:"Plane"
     },
     hotelDetails:{
         type:[{
             name:{
                 type:String,
-                required:[true,"Please enter Hotel name"]
+                required:[true,"Please enter the focal person name"]
             },
             stars:{
                 type:Number,
@@ -42,7 +49,7 @@ const travelPackageSchema = new mongoose.Schema({
         }],
         default:null
     },
-    DepartureDate:{
+    departureDate:{
         type:Date,
         required: [true, "Please enter Date of departure"]
     },
@@ -71,5 +78,5 @@ const travelPackageSchema = new mongoose.Schema({
 
     }
 })
-
+ 
 export const Package = mongoose.model("Package",travelPackageSchema)
