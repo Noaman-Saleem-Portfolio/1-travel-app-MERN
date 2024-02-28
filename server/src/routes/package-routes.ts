@@ -11,13 +11,13 @@ const router = express.Router();
 // route - /api/v1/package/new
 router.route("/new").post(verifyJWT, newPackage);
 
-// route - /api/v1/package/add-images
+// route - /api/v1/package/add-images 
 router.route("/add-images").post(
   verifyJWT,
   upload.fields([
     {
       name: "packageImages",
-      maxCount: 3,
+      maxCount: 5,
     },
   ]),
   updatePackageImages

@@ -98,15 +98,54 @@ export const newPackage = TryCatch(
 //////////////////////////////
 export const updatePackageImages = TryCatch(
   async (req: MyUserRequest, res: Response, next: NextFunction) => {
+
+    const {packageId} = req.body;
+
     //reading uploaded files
     const files = req.files as {
       [fieldname: string]: Express.Multer.File[];
     };
     // console.log(files);
     // console.log(files.packageImages);
-
+    //if files.packageImages === undefined
+    if(!files.packageImages){
+      return next(new ErrorHandler("No image uploaded", 400));
+    }
     //saving files path into an array
-    const imagesArray = files.packageImages.map((item) => item.path);
-    // console.log(imagesArray);
+    const imagesArray : string[] = files.packageImages.map((item) => item.path);
+    console.log(imagesArray);
+
+    const foundPackage = await Package.findById(packageId);
+    // console.log(foundPackage);
+    
+
+    if (!foundPackage) {
+      return next(new ErrorHandler("No associated Package found in DB", 400));
+    }
+    
+     //checking if packageImages already exist if yes then push them into new updated images array
+     if(foundPackage?.packageImages.length > 0){
+      foundPackage?.packageImages.map((i) => {
+        console.log(i);
+        return imagesArray.push(i)
+      })
+     }
+
+     
+    const updatedPackage = await Package.findByIdAndUpdate(
+      foundPackage._id,
+      {
+        $set: {
+          packageImages: imagesArray,
+        },
+      },
+      { new: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Package images updated successfully",
+      updatedPackage,
+    });
   }
-);
+); 

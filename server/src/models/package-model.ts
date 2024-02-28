@@ -18,7 +18,8 @@ const travelPackageSchema = new mongoose.Schema(
     },
     packageImages: {
       type: [String],
-      default: null,
+      //if value not provided it will be [] empty array
+      // default: null,
     },
     duration: {
       type: Number,
