@@ -92,3 +92,21 @@ export const newPackage = TryCatch(
     });
   }
 );
+
+//////////////////////////////
+// Update Package Images
+//////////////////////////////
+export const updatePackageImages = TryCatch(
+  async (req: MyUserRequest, res: Response, next: NextFunction) => {
+    //reading uploaded files
+    const files = req.files as {
+      [fieldname: string]: Express.Multer.File[];
+    };
+    // console.log(files);
+    // console.log(files.packageImages);
+
+    //saving files path into an array
+    const imagesArray = files.packageImages.map((item) => item.path);
+    // console.log(imagesArray);
+  }
+);
