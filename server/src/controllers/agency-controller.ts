@@ -7,9 +7,7 @@ import { TryCatch } from "../middlewares/error.js";
 import { Types } from "mongoose";
 import jwt from "jsonwebtoken";
 import { sendEmail } from "../utils/send-email.js";
-import crypto from "crypto"
-
-
+import crypto from "crypto";
 
 const generateAccessAndRefereshTokens = async (userId: Types.ObjectId) => {
   try {
@@ -59,12 +57,6 @@ export const newAgency = TryCatch(
       facebookProfile,
     } = req.body;
 
-    const emailExists = await Agency.findOne({ email });
-
-    if (emailExists) {
-      return next(new ErrorHandler("The provided Email already exists", 400));
-    }
-
     //not working in typescript types
     // const logo = req.files["companyLogo"];
     // console.log(logo);
@@ -76,8 +68,8 @@ export const newAgency = TryCatch(
     };
 
     let logo;
-    console.log("here");
-    console.log(files.companyLogo);
+    // console.log("here");
+    // console.log(files.companyLogo);
     //to check whether to delete file from upload folder
     // console.log(files.companyLogo !== undefined);
     // const logo = files.companyLogo[0];
@@ -87,6 +79,19 @@ export const newAgency = TryCatch(
     }
 
     // console.log(logo);
+
+    const emailExists = await Agency.findOne({ email });
+
+    if (emailExists) {
+      if (files.companyLogo) {
+        // console.log("File is uploaded");
+
+        rm(logo?.path as PathLike, () => {
+          console.log("Deleted");
+        });
+      }
+      return next(new ErrorHandler("The provided Email already exists", 400));
+    }
 
     if (
       !name ||
@@ -351,124 +356,118 @@ export const changeCurrentPassword = TryCatch(
   }
 );
 
-
 //////////////////////////////
 //// Forgot Password
 //////////////////////////////
-export const forgotPassword = TryCatch(async (req:Request, res:Response, next:NextFunction) => {
-  const user = await Agency.findOne({ email: req.body.email });
+export const forgotPassword = TryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = await Agency.findOne({ email: req.body.email });
 
-  if (!user) {
-    return next(new ErrorHandler("User not found",404))
+    if (!user) {
+      return next(new ErrorHandler("User not found", 404));
+    }
+
+    // Get ResetPassword Token
+    const resetToken = user.getResetPasswordToken();
+
+    await user.save({ validateBeforeSave: false });
+
+    // console.log(`req.protocol = ${req.protocol}`);
+    // console.log(`req.get("host") = ${req.get("host")}`);
+
+    const resetPasswordUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/password/reset/${resetToken}`;
+
+    const message = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\nIf you have not requested this email then, please ignore it.`;
+
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: `Password reset link`,
+        message,
+      });
+      res.status(200).json({
+        success: true,
+        message: `Password reset link sent to ${user.email} successfully`,
+      });
+    } catch (error: any) {
+      user.resetPasswordToken = null;
+      user.resetPasswordExpire = null;
+
+      await user.save({ validateBeforeSave: false });
+
+      return next(new ErrorHandler(error.message, 500));
+    }
   }
+);
 
-  // Get ResetPassword Token 
-  const resetToken = user.getResetPasswordToken();
+//////////////////////////////
+// Reset Password
+//////////////////////////////
+export const resetPassword = TryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // creating token hash
+    const resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(req.params.token)
+      .digest("hex");
 
-  await user.save({ validateBeforeSave: false });
-
-  // console.log(`req.protocol = ${req.protocol}`);
-  // console.log(`req.get("host") = ${req.get("host")}`);
-  
-
-  const resetPasswordUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/password/reset/${resetToken}`;
-
-  const message = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\nIf you have not requested this email then, please ignore it.`;
-
-  try {
-    await sendEmail({
-      email: user.email,
-      subject: `Password reset link`,
-      message,
-    });
-    res.status(200).json({
-      success: true,
-      message: `Password reset link sent to ${user.email} successfully`,
+    const user = await Agency.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() },
     });
 
+    if (!user) {
+      return next(
+        new ErrorHandler(
+          "Reset Password Token is invalid or has been expired",
+          400
+        )
+      );
+    }
 
-  } catch (error:any) {
+    if (req.body.password !== req.body.confirmPassword) {
+      return next(
+        new ErrorHandler("Password does not match with confirm password", 400)
+      );
+    }
+
+    user.password = req.body.password;
     user.resetPasswordToken = null;
     user.resetPasswordExpire = null;
 
     await user.save({ validateBeforeSave: false });
 
-    return next(new ErrorHandler(error.message, 500));
-  }
-});
-
-//////////////////////////////
-// Reset Password
-//////////////////////////////
-export const resetPassword = TryCatch(async (req:Request, res:Response, next:NextFunction) => {
-  // creating token hash
-  const resetPasswordToken = crypto
-    .createHash("sha256")
-    .update(req.params.token)
-    .digest("hex"); 
-
-  const user = await Agency.findOne({
-    resetPasswordToken,
-    resetPasswordExpire: { $gt: Date.now() },
-  });
-
-  if (!user) {
-    return next(
-      new ErrorHandler(
-        "Reset Password Token is invalid or has been expired",
-        400
-      )
+    //logging in the user
+    const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
+      user._id
     );
+
+    const loggedInUser = await Agency.findById(user._id).select(
+      "-password -refreshToken"
+    );
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
+      .json({
+        success: true,
+        message: "User logged In Successfully",
+        user: loggedInUser,
+      });
   }
-
-  if (req.body.password !== req.body.confirmPassword) {
-    return next(new ErrorHandler("Password does not match with confirm password", 400));
-  }
-
-  user.password = req.body.password;
-  user.resetPasswordToken = null;
-  user.resetPasswordExpire = null;
-
-  await user.save({ validateBeforeSave: false });
-
-  //logging in the user
-  const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
-    user._id
-  );
-
-  const loggedInUser = await Agency.findById(user._id).select(
-    "-password -refreshToken"
-  );
-
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
-
-  return res
-    .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
-    .json({
-      success: true,
-      message: "User logged In Successfully",
-      user: loggedInUser,
-    });
-
-});
+);
 
 //////////////////////////////
 // Update Agency Logo
 //////////////////////////////
-export const updateAgencyLogo = TryCatch(async (req:Request, res:Response, next:NextFunction) => {
-
-})
-
-
-
-
-
-
-
+export const updateAgencyLogo = TryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {}
+);
