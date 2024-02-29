@@ -94,7 +94,9 @@ export const newPackage = TryCatch(
 );
 
 //////////////////////////////
-// Update Package Images
+// Upload Package Images
+//how to resolve file not being uploaded on postman issue
+//https://stackoverflow.com/questions/60036239/upload-file-failed-postman
 //////////////////////////////
 export const updatePackageImages = TryCatch(
   async (req: MyUserRequest, res: Response, next: NextFunction) => {
