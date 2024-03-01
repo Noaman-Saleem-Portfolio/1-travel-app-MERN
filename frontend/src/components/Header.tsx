@@ -3,14 +3,17 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { Link } from "react-router-dom";
+import { FiAlignJustify, FiAlignCenter } from "react-icons/fi";
 
 const Header = () => {
   return (
     <header>
-      <Navbar expand="lg" className="">
+      <Navbar expand="md" className="">
         <Container>
-          <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Brand href="#home">LoGo</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav">
+            <FiAlignCenter />
+          </Navbar.Toggle>
           <Navbar.Collapse
             id="basic-navbar-nav"
             className="justify-content-between"

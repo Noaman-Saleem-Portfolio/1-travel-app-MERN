@@ -1,0 +1,30 @@
+@media screen and (max-width: 767px) {
+  //specificity matters
+  header {
+    .navbar {
+      border: none;
+      background-color: #8b3eea;
+    }
+
+    .navbar-brand {
+      color: #fff;
+    }
+  }
+  //on small screens
+  .navbar-nav {
+    align-items: start;
+    background-color: #ffffff;
+  }
+
+  .explore-packages-btn {
+    padding: 7px 15px;
+  }
+
+  .navbar-toggler {
+    font-size: 2rem;
+    border: none;
+    color: #fff;
+    // background-color: yellow;
+    // border: 1px solid black;
+  }
+}

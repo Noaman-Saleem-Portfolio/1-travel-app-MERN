@@ -7,41 +7,37 @@
 // }
 
 header {
-  //   .explore-packages {
-  //     background-color: #8b3eea;
-  //     color: white !important;
-  //     border-radius: 5px;
-  //   }
   // font-family: "MadimiOne-Regular", sans-serif;
-  // font-weight: 400;
-
-  // .navbar-nav .nav-link.active,
-  // .navbar-nav .nav-link.show {
-  //   color: #8b3eea;
-  // }
 
   .navbar {
     background-color: #ffffff;
     height: 5rem;
     border-bottom: 1.6px solid #e7e7e7;
+    font-weight: 400;
   }
 
-  .nav-link{
-    color: #314d8d;
+  .navbar-toggler {
+    &:focus {
+      box-shadow: none;
+    }
   }
 
-  .explore-packages-btn{
+  .nav-link {
+    color: #2b2540;
+  }
+
+  .explore-packages-btn {
     background-color: #8b3eea;
     border-radius: 5px;
     color: white;
     border: 2px solid #8b3eea;
-    
-    &:hover  {
+
+    &:hover {
       background-color: #ffffff;
       color: #2b2540;
       padding: 7px 10px;
       cursor: pointer;
-      transition: .4s all ease-in-out;
+      transition: 0.4s all ease-in-out;
     }
   }
 }
