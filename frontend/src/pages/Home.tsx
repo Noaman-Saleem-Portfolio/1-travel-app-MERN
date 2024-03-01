@@ -17,7 +17,7 @@ const Home = () => {
           </div>
 
           <div className="form">
-            <img src={twoTraverlers} height={490} alt="" />
+            <img src={twoTraverlers} height={450} alt="" />
           </div>
         </Container>
       </div>
