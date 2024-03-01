@@ -1,0 +1,22 @@
+// @import url("https://fonts.googleapis.com/css2?family=Madimi+One&display=swap");
+
+// how to use locally downloaded font in css
+@font-face {
+  font-family: MadimiOne-Regular;
+  src: url("./fonts/MadimiOne-Regular.ttf");
+}
+
+header {
+  //   .explore-packages {
+  //     background-color: #8b3eea;
+  //     color: white !important;
+  //     border-radius: 5px;
+  //   }
+  font-family: "MadimiOne-Regular", sans-serif;
+  font-weight: 400;
+
+  .navbar-nav .nav-link.active,
+  .navbar-nav .nav-link.show {
+    color: #8b3eea;
+  }
+}
