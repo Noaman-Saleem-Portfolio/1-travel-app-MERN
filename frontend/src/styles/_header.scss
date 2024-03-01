@@ -24,6 +24,9 @@ header {
 
   .nav-link {
     color: #2b2540;
+    // &:hover {
+    //   color: #8b3eea;
+    // }
   }
 
   .explore-packages-btn {
@@ -39,5 +42,10 @@ header {
       cursor: pointer;
       transition: 0.4s all ease-in-out;
     }
+  }
+
+  //hide the nav dropdown default icon
+  .dropdown-toggle::after {
+    display: none;
   }
 }

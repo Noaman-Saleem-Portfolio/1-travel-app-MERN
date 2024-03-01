@@ -3,14 +3,18 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { Link } from "react-router-dom";
-import { FiAlignJustify, FiAlignCenter } from "react-icons/fi";
+import { FiAlignCenter } from "react-icons/fi";
+import { FaAngleDown } from "react-icons/fa";
 
 const Header = () => {
   return (
     <header>
+      <div className="topbar"></div>
       <Navbar expand="md" className="">
         <Container>
-          <Navbar.Brand href="#home">LoGo</Navbar.Brand>
+          <Link className="navbar-brand" to={"/"}>
+            LoGo
+          </Link>
           <Navbar.Toggle aria-controls="basic-navbar-nav">
             <FiAlignCenter />
           </Navbar.Toggle>
@@ -22,7 +26,15 @@ const Header = () => {
               <Link className="nav-link " to={"/"}>
                 Home
               </Link>
-              <NavDropdown title="Caterory" id="basic-nav-dropdown">
+              <NavDropdown
+                title={
+                  <span>
+                    Caterory
+                    <FaAngleDown style={{ color: "#2b2540" }} size="15" />
+                  </span>
+                }
+                id="basic-nav-dropdown"
+              >
                 <Link className="dropdown-item" to={"/"}>
                   Action
                 </Link>
