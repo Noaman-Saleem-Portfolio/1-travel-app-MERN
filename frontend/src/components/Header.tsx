@@ -7,7 +7,40 @@ import { Link } from "react-router-dom";
 const Header = () => {
   return (
     <header>
-      <Navbar expand="lg" className="bg-body-tertiary">
+      <Navbar expand="lg" className="">
+        <Container>
+          <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse
+            id="basic-navbar-nav"
+            className="justify-content-between"
+          >
+            <Nav className="">
+              <Link className="nav-link " to={"/"}>
+                Home
+              </Link>
+              <NavDropdown title="Caterory" id="basic-nav-dropdown">
+                <Link className="dropdown-item" to={"/"}>
+                  Action
+                </Link>
+              </NavDropdown>
+              <Link className="nav-link" to={"/news"}>
+                News
+              </Link>
+              <Link className="nav-link" to={"/contact"}>
+                Contact
+              </Link>
+            </Nav>
+            <Nav>
+              <Link className="nav-link explore-packages-btn" to={"/"}>
+                Explore Travel Packages
+              </Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+
+      {/* <Navbar expand="lg" className="bg-body-tertiary">
         <Container>
           <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -38,7 +71,7 @@ const Header = () => {
             </Nav>
           </Navbar.Collapse>
         </Container>
-      </Navbar>
+      </Navbar> */}
     </header>
   );
 };
