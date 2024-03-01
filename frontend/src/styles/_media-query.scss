@@ -1,6 +1,19 @@
 @media screen and (max-width: 767px) {
   //specificity matters
   header {
+    .topbar {
+      .right {
+        // color: yellow;
+        > span {
+          display: none;
+        }
+      }
+
+      .left {
+        flex-basis: 550px;
+        // color: yellow;
+      }
+    }
     .navbar {
       border: none;
       background-color: #8b3eea;
@@ -12,8 +25,15 @@
   }
   //on small screens
   .navbar-nav {
-    align-items: start;
+    // align-items: start;
     background-color: #ffffff;
+    padding: 15px;
+    border-bottom: 1px solid #e7e7e7;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  }
+
+  .nav-link {
+    border-bottom: 1px solid #e7e7e7;
   }
 
   .explore-packages-btn {

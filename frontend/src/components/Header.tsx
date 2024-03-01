@@ -5,11 +5,46 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import { Link } from "react-router-dom";
 import { FiAlignCenter } from "react-icons/fi";
 import { FaAngleDown } from "react-icons/fa";
+import { FaFacebookSquare, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaSquareTwitter } from "react-icons/fa6";
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
 
 const Header = () => {
   return (
     <header>
-      <div className="topbar"></div>
+      <Container>
+        <div className="topbar">
+          <div className="right">
+            <div className="logo">
+              <FaFacebookSquare />
+              <FaSquareTwitter />
+              <FaInstagram />
+              <FaLinkedin />
+            </div>
+            <span>+011 234 567 89</span>
+            <span>contact@domain.com</span>
+          </div>
+          <div className="left">
+            <Link to={"/"}>Login</Link>
+            <Link to={"/"}>Sign up</Link>
+            <DropdownButton
+              id="dropdown-basic-button"
+              title={
+                <span>
+                  English
+                  <FaAngleDown style={{ color: "#2b2540" }} size="15" />
+                </span>
+              }
+            >
+              <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+              <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+              <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+            </DropdownButton>
+          </div>
+        </div>
+      </Container>
+
       <Navbar expand="md" className="">
         <Container>
           <Link className="navbar-brand" to={"/"}>
@@ -20,7 +55,7 @@ const Header = () => {
           </Navbar.Toggle>
           <Navbar.Collapse
             id="basic-navbar-nav"
-            className="justify-content-between"
+            className="justify-content-between align-items-center"
           >
             <Nav className="">
               <Link className="nav-link " to={"/"}>
