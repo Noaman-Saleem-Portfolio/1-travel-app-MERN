@@ -1,4 +1,7 @@
 @media screen and (max-width: 767px) {
+  .container {
+    width: 98%;
+  }
   //specificity matters
   header {
     .topbar {
@@ -46,5 +49,45 @@
     color: #fff;
     // background-color: yellow;
     // border: 1px solid black;
+  }
+
+  .home-page {
+    .banner {
+      .container {
+        div {
+          flex-basis: 50%;
+          > h2 {
+            color: red;
+            font-size: 10px;
+            font-weight: 400;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .home-page {
+    .banner {
+      .container {
+        div {
+          flex-basis: 50%;
+          > h2 {
+            // color: red;
+            font-size: 50px;
+          }
+        }
+        .form {
+          // flex-basis: 50%;
+          // padding-top: 55px;
+          display: flex;
+          justify-content: center;
+          > img {
+            height: 300px;
+          }
+        }
+      }
+    }
   }
 }
