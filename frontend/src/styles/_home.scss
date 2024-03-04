@@ -10,6 +10,7 @@
     .container {
       display: flex;
       justify-content: space-between;
+      align-items: center;
 
       div {
         flex-basis: 45%;
@@ -35,27 +36,74 @@
 
   .search-form-container {
     // background-color: red;
-    background-image: url("../assets//images/home/map-bg.png");
+    background-image: url("../assets//images/home/banner-six-1.png"),
+      linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
     // height: 100px;
     padding: 60px;
+    background-size: cover;
+    background-position: center;
 
-    > .search-form {
-      width: 50%;
+    .search-form-items {
+      background-color: rgba(0, 0, 0, 0.5);
+      width: 80%;
+      padding: 45px 15px;
+      border-radius: 10px;
       margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
     }
 
-    button{
-      display: inline-block;
+    .search-form {
+      display: flex;
+      justify-content: space-around;
+    }
+
+    button {
+      display: block;
       background-color: #8b3eea;
       color: #fff;
+      border: none;
+      padding: 5px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      margin: 0px auto;
+      margin-top: 35px;
+      font-size: 22px;
+
+      &:hover {
+        background-color: #6118bb;
+      }
     }
 
     label {
       display: block;
       font-weight: 700;
       font-size: 20px;
+      color: #fff;
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid orangered;
+      font-size: 22px;
+      &:focus {
+        // border: 5px solid green;
+        outline: none;
+      }
+    }
+
+    select {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid orangered;
+      color: grey;
+      font-size: 22px;
+      &:focus {
+        // border: 5px solid green;
+        outline: none;
+      }
+      option {
+        color: black;
+      }
     }
   }
 }

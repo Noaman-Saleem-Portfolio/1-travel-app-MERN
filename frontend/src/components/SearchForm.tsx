@@ -22,50 +22,53 @@ const SearchForm = () => {
   });
 
   return (
-    <div className="search-form">
-      <div className="for-element">
-        <label htmlFor="">Where To?</label>
-        <input
-          type="text"
-          placeholder="Where To?"
-          name="destination"
-          value={values.destination}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          className="form-input"
-        />
-      </div>
+    <div className="search-form-items">
+      <div className="search-form">
+        <div className="for-element">
+          <label htmlFor="">Where To?</label>
+          <input
+            type="text"
+            placeholder="Where To?"
+            name="destination"
+            value={values.destination}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className="form-input"
+          />
+        </div>
 
-      <div className="for-element">
-        <label htmlFor="">Month</label>
-        <input
-          type="month"
-          //   placeholder="Where To?"
-          name="departureDate"
-          value={values.departureDate}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          className="form-input"
-        />
-      </div>
+        <div className="for-element">
+          <label htmlFor="">Month</label>
+          <input
+            type="month"
+            //   placeholder="Where To?"
+            name="departureDate"
+            value={values.departureDate}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className="form-input"
+          />
+        </div>
 
-      <div className="for-element">
-        <label htmlFor="">Travel type</label>
-        <select
-          name="packageCategory"
-          onChange={handleChange}
-          onBlur={handleBlur}
-          className="form-input"
-        >
-          <option value={values.packageCategory}>Select category</option>
-          <option value={values.packageCategory}>Adventure</option>
-          <option value={values.packageCategory}>Couple</option>
-          <option value={values.packageCategory}>Family</option>
-        </select>
+        <div className="for-element">
+          <label htmlFor="">Travel type</label>
+          <select
+            name="packageCategory"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className="form-input"
+          >
+            <option value={values.packageCategory}>Select category</option>
+            <option value={values.packageCategory}>Adventure</option>
+            <option value={values.packageCategory}>Couple</option>
+            <option value={values.packageCategory}>Family</option>
+          </select>
+        </div>
       </div>
+      {/* search-form */}
       <button>Find Now</button>
     </div>
-    // search-form
+    // search-form-items
   );
 };
 

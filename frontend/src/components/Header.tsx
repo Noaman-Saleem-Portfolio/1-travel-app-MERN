@@ -45,7 +45,7 @@ const Header = () => {
         </div>
       </Container>
 
-      <Navbar expand="md" className="">
+      <Navbar expand="md" className="" sticky="top">
         <Container>
           <Link className="navbar-brand" to={"/"}>
             LoGo
