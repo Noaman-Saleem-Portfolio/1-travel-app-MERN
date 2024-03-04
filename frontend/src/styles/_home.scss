@@ -32,4 +32,30 @@
       }
     }
   }
+
+  .search-form-container {
+    // background-color: red;
+    background-image: url("../assets//images/home/map-bg.png");
+    // height: 100px;
+    padding: 60px;
+
+    > .search-form {
+      width: 50%;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    button{
+      display: inline-block;
+      background-color: #8b3eea;
+      color: #fff;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      font-size: 20px;
+    }
+  }
 }

@@ -1,6 +1,6 @@
-import React from "react";
 import { Container } from "react-bootstrap";
 import twoTraverlers from "../assets/images/home/banner-five-img.png";
+import SearchForm from "../components/SearchForm";
 
 const Home = () => {
   return (
@@ -21,7 +21,14 @@ const Home = () => {
           </div>
         </Container>
       </div>
+      {/* banner */}
+
+      <div className="search-form-container">
+        <SearchForm />
+      </div>
+      {/* search-form */}
     </div>
+    // home-page
   );
 };
 

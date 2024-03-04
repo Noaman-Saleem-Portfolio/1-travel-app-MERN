@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import crypto from "crypto"
+import crypto from "crypto";
 // import { config } from "dotenv";
 
 //Configuring environment variables
@@ -14,7 +14,7 @@ export interface agencyType extends Document {
   name: string;
   email: string;
   password: string;
-  role:string;
+  role: string;
   companyLogo: string | null;
   phoneNumber: number;
   address: string;
@@ -24,8 +24,8 @@ export interface agencyType extends Document {
   facebookProfile: string | null;
   isApproved: boolean;
   refreshToken: string | null;
-  resetPasswordToken: string | null ;
-  resetPasswordExpire: string | null ;
+  resetPasswordToken: string | null;
+  resetPasswordExpire: string | null;
   createdAt: Date;
   updatedAt: Date;
   isPasswordCorrect: (password: string) => Promise<boolean>;
@@ -56,9 +56,9 @@ const agencySchema = new mongoose.Schema(
       minLength: [8, "Password should be greater than 8 characters"],
       // select: false,
     },
-    role:{
-      type:String,
-      default:"agency"
+    role: {
+      type: String,
+      default: "agency",
     },
     companyLogo: {
       type: String,
