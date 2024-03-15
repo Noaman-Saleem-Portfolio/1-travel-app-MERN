@@ -1,2 +1,8 @@
-@import "./header.scss";
+@import "./menuBar.scss";
+@import "./bannerHome";
+@import "./home";
 @import "./media-query.scss";
+
+*{
+    font-family: Lato, sans-serif;
+}

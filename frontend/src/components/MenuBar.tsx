@@ -26,7 +26,7 @@ function MenuBar() {
                 LoGo
               </Offcanvas.Title>
             </Offcanvas.Header>
-            <Offcanvas.Body className="justify-content-between">
+            <Offcanvas.Body className="justify-content-between align-items-center">
               <Nav className=" right-nav">
                 <Nav.Link as={Link} to={"/"}>
                   Home
@@ -72,11 +72,19 @@ function MenuBar() {
                   </NavDropdown.Item>
                 </NavDropdown>
               </Nav>
-              <Nav className=" ">
-                <Nav.Link as={Link} to={"/news"}>
+              <Nav className="left-nav align-items-center">
+                <Nav.Link
+                  as={Link}
+                  to={"/news"}
+                  style={{ marginRight: "30px" }}
+                >
                   Login
                 </Nav.Link>
-                <Nav.Link as={Link} to={"/contact"}>
+                <Nav.Link
+                  as={Link}
+                  to={"/contact"}
+                  style={{ marginRight: "30px" }}
+                >
                   Sign up
                 </Nav.Link>
                 <Nav.Link as={Link} to={"/"} className="partner">

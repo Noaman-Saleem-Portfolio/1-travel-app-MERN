@@ -1,0 +1,19 @@
+.bannerHome{
+    // background-color: red;
+    background-image: url("../assets/images/home/banner-bg-1.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top;
+    height: 60vh;
+
+    h2{
+        width: 500px;
+        margin: 0 auto;
+        padding-top: 40px;
+        font-family: Lato;
+        font-weight: 700;
+        font-size: 48px;
+        text-align: center;
+        // color: #fff;
+    }
+}
