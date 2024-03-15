@@ -12,7 +12,9 @@ function MenuBar() {
     <>
       <Navbar expand="xl" className="bg-body-tertiary mb-3 header">
         <Container>
-          <Navbar.Brand href="#">Company LoGo</Navbar.Brand>
+          <Navbar.Brand as={Link} to={"/"} href="#">
+            Company LoGo
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-xl`}>
             <FiAlignCenter size={"32"} />
           </Navbar.Toggle>
@@ -72,7 +74,7 @@ function MenuBar() {
                   </NavDropdown.Item>
                 </NavDropdown>
               </Nav>
-              <Nav className="left-nav align-items-center">
+              <Nav className="left-nav ">
                 <Nav.Link
                   as={Link}
                   to={"/news"}
@@ -87,7 +89,11 @@ function MenuBar() {
                 >
                   Sign up
                 </Nav.Link>
-                <Nav.Link as={Link} to={"/"} className="partner">
+                <Nav.Link
+                  as={Link}
+                  to={"/"}
+                  className="partner align-self-start"
+                >
                   Become a partner
                 </Nav.Link>
               </Nav>
